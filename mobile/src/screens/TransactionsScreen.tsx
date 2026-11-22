@@ -15,8 +15,9 @@ import {
 import { useFocusEffect } from '@react-navigation/native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { TransactionRow } from '../components/TransactionRow';
-import { listTransactions } from '../api/transactions';
-import { Transaction } from '../types';
+import { SummaryHeader } from '../components/SummaryHeader';
+import { getSummary, listTransactions } from '../api/transactions';
+import { Summary, Transaction } from '../types';
 import { colors, spacing } from '../theme';
 import type { RootStackParamList } from '../navigation/types';
 
@@ -24,6 +25,7 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
 export function TransactionsScreen({ navigation }: Props) {
   const [items, setItems] = useState<Transaction[]>([]);
+  const [summary, setSummary] = useState<Summary | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -31,10 +33,12 @@ export function TransactionsScreen({ navigation }: Props) {
   const load = useCallback(async () => {
     try {
       setError(null);
-      const data = await listTransactions();
+      // Fetch the list and the dashboard summary together (in parallel).
+      const [data, sum] = await Promise.all([listTransactions(), getSummary()]);
       setItems(data);
+      setSummary(sum);
     } catch (e: any) {
-      setError('Could not load transactions. Is the backend running?');
+      setError('Could not load data. Is the backend running?');
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -76,6 +80,7 @@ export function TransactionsScreen({ navigation }: Props) {
         )}
         contentContainerStyle={styles.listContent}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        ListHeaderComponent={<SummaryHeader summary={summary} />}
         ListEmptyComponent={
           <View style={styles.center}>
             <Text style={styles.emptyTitle}>No transactions yet</Text>
