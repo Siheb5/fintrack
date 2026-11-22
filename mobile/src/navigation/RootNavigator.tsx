@@ -10,17 +10,19 @@ import React from 'react';
 import { ActivityIndicator, View, StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { Pressable, Text } from 'react-native';
 import { useAuth } from '../auth/AuthContext';
 import { LoginScreen } from '../screens/LoginScreen';
 import { RegisterScreen } from '../screens/RegisterScreen';
-import { HomeScreen } from '../screens/HomeScreen';
+import { TransactionsScreen } from '../screens/TransactionsScreen';
+import { AddTransactionScreen } from '../screens/AddTransactionScreen';
 import { colors } from '../theme';
 import type { RootStackParamList } from './types';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export function RootNavigator() {
-  const { token, loading } = useAuth();
+  const { token, loading, logout } = useAuth();
 
   if (loading) {
     return (
@@ -42,7 +44,19 @@ export function RootNavigator() {
         ) : (
           // Logged-in stack
           <>
-            <Stack.Screen name="Home" component={HomeScreen} options={{ title: 'FinTrack' }} />
+            <Stack.Screen
+              name="Home"
+              component={TransactionsScreen}
+              options={{
+                title: 'FinTrack',
+                headerRight: () => (
+                  <Pressable onPress={logout} hitSlop={10}>
+                    <Text style={{ color: colors.primary, fontWeight: '600' }}>Log out</Text>
+                  </Pressable>
+                ),
+              }}
+            />
+            <Stack.Screen name="AddTransaction" component={AddTransactionScreen} />
           </>
         )}
       </Stack.Navigator>
