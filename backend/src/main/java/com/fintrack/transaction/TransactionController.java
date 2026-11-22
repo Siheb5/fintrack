@@ -21,23 +21,15 @@ import java.util.List;
 public class TransactionController {
 
     private final TransactionService service;
-    private final com.fintrack.user.UserRepository users;
 
-    public TransactionController(TransactionService service,
-                                 com.fintrack.user.UserRepository users) {
+    public TransactionController(TransactionService service) {
         this.service = service;
-        this.users = users;
     }
 
-    // ===== TEMPORARY (step 3c only) =====================================
-    // There is no login yet, so we act as the first user in the database.
-    // In step 3d this is replaced by the real user id extracted from the JWT.
+    // The current user comes from the verified JWT (set by JwtAuthFilter).
     private Long currentUserId() {
-        return users.findAll().stream().findFirst()
-                .map(com.fintrack.user.User::getId)
-                .orElseThrow(() -> new IllegalStateException("no dev user seeded"));
+        return com.fintrack.security.CurrentUser.id();
     }
-    // ====================================================================
 
     /** POST /api/transactions  -> 201 Created */
     @PostMapping

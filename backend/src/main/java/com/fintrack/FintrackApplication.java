@@ -2,6 +2,7 @@ package com.fintrack;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 
 /**
  * The entry point of the whole backend.
@@ -14,6 +15,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * Running main() starts the entire application.
  */
 @SpringBootApplication
+@ConfigurationPropertiesScan   // picks up @ConfigurationProperties classes like JwtProperties
 public class FintrackApplication {
 
     public static void main(String[] args) {
