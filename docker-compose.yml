@@ -1,0 +1,45 @@
+# docker-compose.yml
+# Starts the PostgreSQL database for FinTrack in a container.
+# Usage:  docker compose up -d     (start in background)
+#         docker compose down      (stop and remove the container)
+#
+# "services" lists the containers we want to run. We have one: the database.
+
+services:
+  db:
+    # The image to run: official PostgreSQL, version 16, on a small Alpine Linux base.
+    image: postgres:16-alpine
+
+    # A friendly, fixed name for the running container.
+    container_name: fintrack-db
+
+    # If it crashes, Docker restarts it automatically (unless we stopped it ourselves).
+    restart: unless-stopped
+
+    # Settings passed into Postgres the first time it starts. These create the
+    # database and the login it will use. (For local dev only — real secrets in prod.)
+    environment:
+      POSTGRES_DB: fintrack        # the database name our app connects to
+      POSTGRES_USER: fintrack      # the username
+      POSTGRES_PASSWORD: fintrack  # the password (fine for local dev)
+
+    # Port mapping "host:container". Postgres listens on 5432 inside the container;
+    # we expose it on 5432 of your machine so the backend can reach it at localhost:5432.
+    ports:
+      - "5432:5432"
+
+    # A named volume so the actual data survives even if the container is recreated.
+    # Without this, deleting the container would wipe your data.
+    volumes:
+      - fintrack_db_data:/var/lib/postgresql/data
+
+    # Docker periodically checks the DB is actually ready to accept connections.
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U fintrack -d fintrack"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+# Declares the named volume used above.
+volumes:
+  fintrack_db_data:
