@@ -1,0 +1,23 @@
+# ===== Java / Spring Boot (backend) =====
+backend/target/
+*.class
+*.jar
+*.war
+
+# ===== Node / React Native (mobile) =====
+mobile/node_modules/
+mobile/.expo/
+mobile/dist/
+mobile/web-build/
+npm-debug.*
+
+# ===== Environment & secrets =====
+.env
+*.env
+!*.env.example
+
+# ===== IDE / OS =====
+.idea/
+.vscode/
+*.iml
+.DS_Store
