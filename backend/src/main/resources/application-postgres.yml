@@ -1,0 +1,32 @@
+# application-postgres.yml — the PRODUCTION / real database profile.
+#
+# Activate it by running with:  --spring.profiles.active=postgres
+# It points at the PostgreSQL database started by docker-compose.yml.
+#
+# Values use ${ENV_VAR:default} syntax: read an environment variable if set,
+# otherwise fall back to the local-dev default. In real deployment you set the
+# env vars and never rely on the defaults.
+
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/fintrack}
+    username: ${DB_USERNAME:fintrack}
+    password: ${DB_PASSWORD:fintrack}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate      # Flyway owns the schema; Hibernate only validates it.
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: false
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+fintrack:
+  jwt:
+    secret: ${JWT_SECRET:dev-only-change-me-this-must-be-at-least-32-bytes-long!!}
+    expiration-ms: ${JWT_EXPIRATION_MS:86400000}
