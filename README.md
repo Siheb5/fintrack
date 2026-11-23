@@ -21,9 +21,9 @@ JWT authentication, and CI.
 
 ## Screenshots
 
-> _Add screenshots here once you run it on your phone (Login, Dashboard, Add transaction)._
->
-> `docs/screenshots/login.png` · `docs/screenshots/dashboard.png` · `docs/screenshots/add.png`
+| Login | Dashboard | Empty state |
+|-------|-----------|-------------|
+| ![Login](docs/screenshots/login.jpeg) | ![Dashboard](docs/screenshots/dashboard.jpeg) | ![Empty](docs/screenshots/empty.jpeg) |
 
 ## Architecture
 
